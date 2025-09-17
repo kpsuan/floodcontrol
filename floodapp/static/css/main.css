@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    padding: 0;
+}
+
+
+.content {
+    width: 85%;
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+h1 {
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #2c3e50;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+table, th, td {
+    border: none;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+th {
+    background: #673ab7;
+    color: white;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background: #f4f9ff;
+}
+
+tr:hover {
+    background: #f4eafc;
+    transition: background 0.2s ease;
+}
+
+form input, form button {
+    margin: 8px 0;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+}
+
+form input:focus {
+    border-color: #673ab7;
+    box-shadow: 0 0 5px rgba(52,152,219,0.4);
+}
+
+input[type="submit"], button {
+    background-color: #673ab7;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #673ab7;
+    transform: scale(1.03);
+}
+
+button {
+    background-color: #e74c3c;
+}
+
+button:hover {
+    background-color: #c0392b;
+    transform: scale(1.03);
+}
