@@ -1,0 +1,26 @@
+[Unit]
+Description=Gunicorn instance to serve floodcontrol
+Requires=floodcontrol.socket
+After=network.target
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+RuntimeDirectory=gunicorn
+WorkingDirectory=/var/www/floodcontrol/floodcontrol_project2
+Environment="PATH=/var/www/floodcontrol/floodcontrol_project2/venv/bin"
+EnvironmentFile=/var/www/floodcontrol/.env
+ExecStart=/var/www/floodcontrol/floodcontrol_project2/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn/floodcontrol.sock \
+          --settings=floodcontrol_project2.production_settings \
+          floodcontrol_project2.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

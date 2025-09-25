@@ -1,0 +1,14 @@
+# Production requirements
+asgiref==3.9.1
+Django==5.2.6
+djangorestframework==3.14.0
+gunicorn==23.0.0
+packaging==25.0
+psycopg2-binary==2.9.10
+sqlparse==0.5.3
+
+# Additional production packages
+whitenoise==6.6.0  # Static file serving
+django-cors-headers==4.3.1  # CORS handling
+python-decouple==3.8  # Environment variables
+dj-database-url==2.1.0  # Database URL parsing
