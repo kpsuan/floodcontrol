@@ -1,59 +1,41 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import FloodControl
-from datetime import datetime
-import json
+from .serializers import FloodControlSerializer
 
-# Health endpoint
-def health_check(request):
-    return JsonResponse({"status": "healthy"}, status=200)
+class HealthCheck(APIView):
+    """
+    API endpoint for health checks
+    """
+    def get(self, request):
+        return Response({"status": "healthy"}, status=status.HTTP_200_OK)
 
-# Get all projects
-def get_floodcontrol(request):
-    items = FloodControl.objects.all()
-    return JsonResponse([i.to_dict() for i in items], safe=False)
+class FloodControlListCreate(generics.ListCreateAPIView):
+    """
+    API endpoint for listing all flood control projects and creating new ones
+    GET: Returns all projects
+    POST: Creates a new project
+    """
+    queryset = FloodControl.objects.all()
+    serializer_class = FloodControlSerializer
 
-# Create project
-def create_floodcontrol(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        item = FloodControl.objects.create(
-            description=data["description"],
-            location=data["location"],
-            contractor=data["contractor"],
-            cost=data["cost"],
-            completion_date=datetime.strptime(data["completion_date"], "%Y-%m-%d").date(),
-        )
-        return JsonResponse(item.to_dict(), status=201)
+class FloodControlRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API endpoint for retrieving, updating, or deleting a specific flood control project
+    GET: Returns a specific project
+    PUT/PATCH: Updates a specific project
+    DELETE: Deletes a specific project
+    """
+    queryset = FloodControl.objects.all()
+    serializer_class = FloodControlSerializer
 
-# Get single project
-def get_floodcontrol_item(request, id):
-    item = get_object_or_404(FloodControl, pk=id)
-    return JsonResponse(item.to_dict())
-
-# Update project
-def update_floodcontrol(request, id):
-    item = get_object_or_404(FloodControl, pk=id)
-    if request.method == "PUT":
-        data = json.loads(request.body)
-        item.description = data.get("description", item.description)
-        item.location = data.get("location", item.location)
-        item.contractor = data.get("contractor", item.contractor)
-        item.cost = data.get("cost", item.cost)
-        if "completion_date" in data:
-            item.completion_date = datetime.strptime(data["completion_date"], "%Y-%m-%d").date()
-        item.save()
-        return JsonResponse(item.to_dict())
-
-# Delete project
-def delete_floodcontrol(request, id):
-    item = get_object_or_404(FloodControl, pk=id)
-    if request.method == "DELETE":
-        item.delete()
-        return JsonResponse({"message": "Flood control project deleted"})
-
-# Web UI
+# Web UI view (keeping this for the HTML interface)
 def index(request):
+    """
+    Web interface for managing flood control projects
+    """
     if request.method == "POST":
         if "delete_id" in request.POST:
             project = get_object_or_404(FloodControl, pk=request.POST["delete_id"])
