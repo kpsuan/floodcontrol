@@ -61,6 +61,7 @@ ALTER USER floodcontrol_user CREATEDB;
 \q
 ```
 
+
 ## Step 5: Deploy Your Application
 
 ```bash
@@ -84,18 +85,23 @@ cp ../.env.example ../.env
 nano ../.env  # Edit with your actual values
 
 # Collect static files and run migrations
-python manage.py collectstatic --noinput --settings=floodcontrol_project2.production_settings
-python manage.py migrate --settings=floodcontrol_project2.production_settings
+# Set environment variable for Django settings
+export DJANGO_SETTINGS_MODULE=floodcontrol_project2.production_settings
+
+# Collect static files
+python manage.py collectstatic --noinput
+python manage.py migrate
 
 # Create superuser
-python manage.py createsuperuser --settings=floodcontrol_project2.production_settings
+python manage.py createsuperuser
 ```
 
 ## Step 6: Configure Gunicorn
 
 ```bash
-# Test Gunicorn
-gunicorn --bind 0.0.0.0:8000 --settings=floodcontrol_project2.production_settings floodcontrol_project2.wsgi:application
+# Test Gunicorn (note: set environment variables, not --settings)
+export DJANGO_SETTINGS_MODULE=floodcontrol_project2.production_settings
+gunicorn --bind 0.0.0.0:8000 floodcontrol_project2.wsgi:application
 
 # If it works, stop it with Ctrl+C and setup as service
 sudo cp ../gunicorn.socket /etc/systemd/system/
@@ -180,8 +186,10 @@ cd /var/www/floodcontrol
 git pull origin main
 source floodcontrol_project2/venv/bin/activate
 pip install -r requirements-prod.txt
-python floodcontrol_project2/manage.py migrate --settings=floodcontrol_project2.production_settings
-python floodcontrol_project2/manage.py collectstatic --noinput --settings=floodcontrol_project2.production_settings
+export DJANGO_SETTINGS_MODULE=floodcontrol_project2.production_settings
+cd floodcontrol_project2
+python manage.py migrate
+python manage.py collectstatic --noinput
 sudo systemctl restart gunicorn.service
 ```
 
@@ -192,7 +200,7 @@ sudo systemctl restart gunicorn.service
    - Check socket file exists: `ls -la /run/gunicorn/`
 
 2. **Static files not loading:**
-   - Run: `python manage.py collectstatic --settings=floodcontrol_project2.production_settings`
+   - Run: `export DJANGO_SETTINGS_MODULE=floodcontrol_project2.production_settings && python manage.py collectstatic --noinput`
    - Check nginx configuration
 
 3. **Database connection errors:**
